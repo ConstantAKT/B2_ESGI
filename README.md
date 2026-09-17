@@ -85,6 +85,31 @@ sans dépendance à la base de données — conformément à la phase 1 du plann
 4. Déployer. Le build (`next build`) ne nécessite aucune connexion à la base : le client
    Postgres n'est créé qu'à la demande, au premier appel API.
 
+## Intégration continue et déploiement (GitHub Actions)
+
+Deux workflows sont définis dans `.github/workflows/` :
+
+- **`ci.yml`** : sur chaque push et chaque pull request, installe les dépendances puis
+  lance `lint`, `test` et `build`. Aucun secret requis — garantit que le projet reste
+  portable (build reproductible sur une machine propre, indépendante de Vercel).
+- **`deploy.yml`** : sur push vers `main` (ou déclenchement manuel), applique le schéma à
+  la base de production (`db:migrate`) puis construit et déploie le projet via la CLI
+  Vercel.
+
+Le workflow de déploiement nécessite les secrets suivants dans les réglages du dépôt
+GitHub (*Settings → Secrets and variables → Actions*) :
+
+| Secret | Description |
+| --- | --- |
+| `VERCEL_TOKEN` | Jeton d'accès personnel Vercel (*Account Settings → Tokens*) |
+| `VERCEL_ORG_ID` | Identifiant de l'organisation/compte Vercel (`.vercel/project.json` après `vercel link`) |
+| `VERCEL_PROJECT_ID` | Identifiant du projet Vercel (`.vercel/project.json` après `vercel link`) |
+| `DATABASE_URL` | Chaîne de connexion Postgres de production (Neon/Supabase) |
+
+Si le projet Vercel est déjà relié au dépôt via l'intégration GitHub native de Vercel,
+désactivez les déploiements automatiques de Vercel sur `main` (*Project Settings → Git*)
+pour éviter un double déploiement, `deploy.yml` prenant le relais.
+
 ## Comment fonctionne la résolution des tours
 
 Vercel exécute des fonctions serverless sans tâche de fond persistante : il n'y a pas de
