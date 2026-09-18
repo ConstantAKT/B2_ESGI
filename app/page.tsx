@@ -49,7 +49,11 @@ export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-16">
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight">🏭 Usine</h1>
+        <div className="flex items-center justify-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-mark.svg" alt="" className="h-12 w-12" />
+          <h1 className="text-3xl font-bold tracking-tight">Usine</h1>
+        </div>
         <p className="mt-2 text-slate-400">Jeu de gestion d&apos;usine en équipes, pour la classe.</p>
       </div>
 
